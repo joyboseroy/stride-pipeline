@@ -1,11 +1,22 @@
 # Indian Judicial Pendency Analysis — STRIDE Pipeline
-## From Graph to Graph: A Structural Diagnosis Framework for High Court Delay
+## Structural Diagnosis Framework for High Court Delay
 
-### Overview
-This repository implements the STRIDE (Structured Transition and Rule-based 
-Institutional Diagnosis Engine) pipeline for the paper:
-"From Queue to Graph: A Structural Diagnosis Framework for Judicial Pendency 
-in Indian High Courts"
+This repository implements the analysis pipeline for the paper:
+
+**"From Queue to Graph: Diagnosing Structural Bottlenecks in Indian High Courts"**
+Joy Bose, Senior Data Scientist and Independent Researcher, Bengaluru
+
+- Preprint: HAL (hal.science) — under review
+- SSRN: under review
+- Medium explainer: [Why Indian Courts Are Slow: A Graph Theory Explanation Nobody Asked For (But Everyone Needs)](https://medium.com/@joyboseroy/why-indian-courts-are-slow-a-graph-theory-explanation-nobody-asked-for-but-everyone-needs-56910f5442df)
+
+---
+
+### What This Does
+
+Analyses 2.45 million writ petition records across ten Indian High Courts to classify courts by structural bottleneck type: Input, Capacity, or Output. Finds that courts fail at different stages of the case lifecycle and require different interventions — vacancy filling helps Input and Capacity courts but has no effect on Output bottleneck courts.
+
+---
 
 ### Prerequisites
 
@@ -15,6 +26,8 @@ Government portals (ecourts.gov.in, njdg.ecourts.gov.in) block cloud IP ranges.
 ```bash
 pip install ecourts pandas numpy scipy networkx matplotlib seaborn lifelines tqdm anthropic
 ```
+
+---
 
 ### Pipeline (run in order)
 
@@ -28,10 +41,12 @@ pip install ecourts pandas numpy scipy networkx matplotlib seaborn lifelines tqd
         ↓
 03_stage_harmonisation.py  Map raw labels → canonical stages
         ↓
-04_graph_construction.py   Build transition graphs, find critical edges (E1)
+04_graph_construction.py   Build transition graphs, find critical edges
         ↓
-05_survival_analysis.py    Competing risks model, clearance curves (E4)
+05_survival_analysis.py    Competing risks model, clearance curves
 ```
+
+---
 
 ### Start Here (Kerala first)
 
@@ -50,7 +65,6 @@ python src/03_stage_harmonisation.py --no-llm
 
 # Check outputs/unmatched_labels.csv
 # If >20% unmatched, add more rules and re-run
-# If <20%, proceed (LLM will handle residuals)
 
 # Step 5: Build graphs
 python src/04_graph_construction.py
@@ -61,63 +75,65 @@ python src/04_graph_construction.py
 python src/01_data_extraction.py --all-courts --max-cases 500
 ```
 
+---
+
 ### Key Outputs
 
 | File | Contents |
 |------|----------|
 | outputs/purpose_vocabulary.csv | REVIEW MANUALLY — stage label vocabulary |
-| outputs/unmatched_labels.csv | Labels that need more rules or LLM |
+| outputs/unmatched_labels.csv | Labels needing more rules or LLM |
 | outputs/court_summary.csv | Per-court descriptive statistics |
-| outputs/critical_edges.csv | CE(c) per court |
+| outputs/critical_edges.csv | Critical edge per court |
 | outputs/bottleneck_classification.csv | Input/Process/Capacity/Output per court |
 | outputs/graphs/graph_*.png | Graph visualisations |
 | outputs/h1_test_result.json | H1 chi-square test result |
 | outputs/edge_duration_distributions.csv | Edge stats for all courts |
+| outputs/cross_court_summary.csv | Cross-court comparison table (from DAKSH analysis) |
+| outputs/stage_distributions.csv | Stage distribution of pending cases per court |
 
-### What Will Go Wrong (documented in advance)
+---
 
-1. **CAPTCHA**: ecourts portal hits CAPTCHA intermittently.
-   Script backs off 90s automatically. Run overnight. Expect ~5-15% failure rate.
+### Key Variables
 
-2. **Purpose vocabulary chaos**: Allahabad expected to have 50+ unique labels,
-   many abbreviations, some numeric codes. Plan 2-3 hours of manual mapping.
+**Variables not previously measured in the literature:**
 
-3. **Missing dates**: ~8-10% of cases will have no filing date.
-   Kept in dataset but flagged. Cannot contribute to duration analysis.
+- `reserved_lag_days`: decision_date minus last_hearing_date. First systematic measurement of reserved judgment delay across Indian High Courts. The Output bottleneck signal.
 
-4. **Backward transitions**: ~5-15% of hearing sequences will show backward
-   stage transitions. These are a mix of data entry errors and genuine remands.
-   Reported as a finding, not silently dropped.
+- `short_gap_count`: number of hearing intervals of 14 days or fewer. Proxy for listings without substantive hearing — adjournment signature.
 
-5. **High OTHER rate in Allahabad**: Expected ~25-30% unclassifiable hearings.
-   Allahabad may need to be excluded from graph analysis or treated separately.
-   This is itself a data quality finding.
+- `bench_type`: single or division bench from coram field. Allows analysis of whether bench composition affects duration.
 
-6. **Reserved lag skew**: Expect heavy right tail. Some cases will show 
-   1000+ day reserved judgment lags. These are real and important findings.
+- `any_govt_party`: government entity in petitioner or respondent. Allows government litigation share analysis per court.
 
-### Variables of Interest
+---
 
-**New variables not in existing literature:**
-- `reserved_lag_days`: decision_date - last_hearing_date
-  The previously unmeasured output bottleneck.
-  First systematic measurement of reserved judgment delay across Indian HCs.
-  
-- `short_gap_count`: number of hearing intervals ≤ 14 days
-  Proxy for listings without substantive hearing (adjournment signature).
+### Known Data Issues (documented in advance)
 
-- `bench_type`: single/division from coram field
-  Allows analysis of whether bench composition affects duration.
+1. **CAPTCHA**: eCourts portal hits CAPTCHA intermittently. Script backs off 90 seconds automatically. Run overnight. Expect 5-15% failure rate.
 
-- `any_govt_party`: government entity in petitioner or respondent
-  Allows government litigation share analysis per court.
+2. **Vocabulary chaos**: Allahabad expected to have 50+ unique labels, many abbreviations, some numeric codes. Plan 2-3 hours of manual mapping. Calcutta has 350 unique stage labels in the DAKSH data.
 
-### Citing the Data Sources
+3. **Missing dates**: Around 8-10% of cases will have no filing date. Flagged but retained. Cannot contribute to duration analysis.
 
-If you use this code:
-- eCourts data: cite openjustice-in/ecourts (DOI: 10.5281/zenodo.13324986)
-- DAKSH data: cite dakshindia.org under CC BY-NC 4.0
-- SC judgment data: cite Dattam Labs AWS Open Data under CC-BY-4.0
+4. **Sentinel values**: Karnataka and Andhra Pradesh in the DAKSH data show 20,599 days (56.4 years) as a placeholder for missing filing dates. Detect and exclude before duration analysis.
+
+5. **Backward transitions**: Around 5-15% of hearing sequences show backward stage transitions. Mix of data entry errors and genuine remands. Reported as a finding, not silently dropped.
+
+6. **J&K encoding**: The Jammu and Kashmir CSV requires latin-1 encoding due to regional language characters in party names.
+
+---
+
+### Data Sources
+
+- **DAKSH High Court Data Portal**: database.dakshindia.org — CC BY-NC 4.0. Primary source for cross-court analysis. Download writ case CSV files after registration.
+- **eCourts**: ecourts.gov.in via openjustice-in/ecourts library (GPL-3.0, DOI: 10.5281/zenodo.13324986). For hearing-level data.
+- **IMLJD**: huggingface.co/datasets/joyboseroy/imljd — CC BY 4.0. Karnataka HC Section 482 petitions 2018-2024.
+
+Raw DAKSH CSV files are not included in this repository due to licence restrictions. Download from DAKSH directly.
+
+---
 
 ### License
+
 GPL-3.0 (inherited from openjustice-in/ecourts dependency)
