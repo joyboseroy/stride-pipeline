@@ -1,0 +1,60 @@
+court,stage,pct_pending
+Allahabad HC,ADMITTED,72.2
+Allahabad HC,OTHER,21.4
+Allahabad HC,DECIDED,4.9
+Allahabad HC,ARGUMENTS,1.4
+Andhra Pradesh HC,ADMITTED,53.8
+Andhra Pradesh HC,ARGUMENTS,38.4
+Andhra Pradesh HC,OTHER,4.1
+Andhra Pradesh HC,RESERVED,2.6
+Andhra Pradesh HC,DECIDED,0.9
+Andhra Pradesh HC,WITHDRAWN,0.1
+Andhra Pradesh HC,FILED,0.0
+Calcutta HC,ADMITTED,63.5
+Calcutta HC,OTHER,17.2
+Calcutta HC,ARGUMENTS,15.7
+Calcutta HC,RESERVED,3.5
+Calcutta HC,WITHDRAWN,0.0
+Calcutta HC,DECIDED,0.0
+Chhattisgarh HC,ARGUMENTS,61.4
+Chhattisgarh HC,OTHER,32.2
+Chhattisgarh HC,RESERVED,6.4
+Chhattisgarh HC,DECIDED,0.0
+Jammu Kashmir HC,ARGUMENTS,65.3
+Jammu Kashmir HC,RESERVED,25.7
+Jammu Kashmir HC,OTHER,7.1
+Jammu Kashmir HC,ADMITTED,1.2
+Jammu Kashmir HC,NOTICED,0.4
+Jammu Kashmir HC,FILED,0.1
+Jammu Kashmir HC,DECIDED,0.1
+Jammu Kashmir HC,WITHDRAWN,0.0
+Karnataka HC,ADMITTED,46.5
+Karnataka HC,RESERVED,24.2
+Karnataka HC,OTHER,15.0
+Karnataka HC,ARGUMENTS,13.8
+Karnataka HC,DECIDED,0.3
+Karnataka HC,WITHDRAWN,0.1
+Karnataka HC,NOTICED,0.0
+Kerala HC,ARGUMENTS,58.8
+Kerala HC,ADMITTED,34.2
+Kerala HC,FILED,4.2
+Kerala HC,OTHER,1.6
+Kerala HC,RESERVED,0.9
+Kerala HC,WITHDRAWN,0.2
+Kerala HC,NOTICED,0.1
+Manipur HC,ADMITTED,59.2
+Manipur HC,OTHER,25.7
+Manipur HC,ARGUMENTS,13.5
+Manipur HC,DECIDED,1.6
+Manipur HC,FILED,0.0
+Meghalaya HC,RESERVED,47.8
+Meghalaya HC,ARGUMENTS,43.0
+Meghalaya HC,OTHER,5.9
+Meghalaya HC,ADMITTED,2.9
+Meghalaya HC,DECIDED,0.5
+Uttarakhand HC,ADMITTED,50.3
+Uttarakhand HC,RESERVED,37.7
+Uttarakhand HC,ARGUMENTS,5.6
+Uttarakhand HC,FILED,4.1
+Uttarakhand HC,DECIDED,1.4
+Uttarakhand HC,OTHER,0.9
