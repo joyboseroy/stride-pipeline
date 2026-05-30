@@ -6,8 +6,6 @@ This repository contains the analysis code for the paper:
 **"From Queue to Graph: Diagnosing Structural Bottlenecks in Indian High Courts"**  
 Joy Bose, Senior Data Scientist and Independent Researcher, Bengaluru
 
-- Preprint: HAL (hal.science) — under review
-- SSRN: under review
 - Medium explainer: [Why Indian Courts Are Slow: A Graph Theory Explanation Nobody Asked For (But Everyone Needs)](https://medium.com/@joyboseroy/why-indian-courts-are-slow-a-graph-theory-explanation-nobody-asked-for-but-everyone-needs-56910f5442df)
 
 ---
